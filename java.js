@@ -2,22 +2,27 @@ let currentNoteId = null;
 
 function addNewNote() {
   const headline = document.getElementById("headline").value;
-  const note = document.getElementById("noteAreaText").value;
+  const noteContent = document.getElementById("noteAreaText").value;
   const lastUpdated = new Date().toISOString();
 
-  if (headline && note) {
+  if (headline && noteContent) {
     if (currentNoteId === null) {
       const id = Math.random();
       const save = {
         id: id,
         noteHeadline: headline,
-        note: note,
+        note: noteContent,
         lastUpdated: lastUpdated,
       };
 
       saveToLocalStorage(save);
     } else {
-      updateNoteInLocalStorage(currentNoteId, headline, note, lastUpdated);
+      updateNoteInLocalStorage(
+        currentNoteId,
+        headline,
+        noteContent,
+        lastUpdated
+      );
     }
 
     document.getElementById("headline").value = "";
@@ -27,7 +32,7 @@ function addNewNote() {
     displayNotes();
   } else {
     alert(
-      "Speichern nicht möglich, Bitte geben Sie eine Überschrift und eine Notiz ein."
+      "Speichern nicht möglich, bitte geben Sie eine Überschrift und eine Notiz ein."
     );
   }
 }
@@ -38,24 +43,25 @@ function saveToLocalStorage(save) {
   localStorage.setItem("notes", JSON.stringify(saveNotes));
 }
 
-function updateNoteInLocalStorage(id, headline, note, lastUpdated) {
+function updateNoteInLocalStorage(id, headline, noteContent, lastUpdated) {
   const saveNotes = JSON.parse(localStorage.getItem("notes")) || [];
-  saveNotes = saveNotes.map((note) => {
+  const updatedNotes = saveNotes.map((note) => {
     if (note.id === id) {
-      note.noteHeadline = headline;
-      note.note = note;
-      note.lastUpdated = lastUpdated;
+      return {
+        ...note,
+        noteHeadline: headline,
+        note: noteContent,
+        lastUpdated: lastUpdated,
+      };
     }
     return note;
   });
-  localStorage.setItem("notes", JSON.stringify(saveNotes));
+  localStorage.setItem("notes", JSON.stringify(updatedNotes));
 }
 
 function deleteButton() {
   if (currentNoteId !== null) {
-    deleteoteFromLocalStorage(currentNoteId);
-    headlineValue;
-    noteValue;
+    deleteNoteFromLocalStorage(currentNoteId);
     currentNoteId = null;
     displayNotes();
   } else {
@@ -63,10 +69,10 @@ function deleteButton() {
   }
 }
 
-function deleteoteFromLocalStorage(id) {
+function deleteNoteFromLocalStorage(id) {
   const saveNotes = JSON.parse(localStorage.getItem("notes")) || [];
-  saveNotes = saveNotes.filter((note) => note.id !== id);
-  localStorage.setItem("notes", JSON.stringify(saveNotes));
+  const updatedNotes = saveNotes.filter((note) => note.id !== id);
+  localStorage.setItem("notes", JSON.stringify(updatedNotes));
 }
 
 function displayNotes() {
@@ -107,8 +113,8 @@ function editNote(id) {
 }
 
 function createNewNote() {
-  headlineValue;
-  noteValue;
+  document.getElementById("headline").value = "";
+  document.getElementById("noteAreaText").value = "";
   currentNoteId = null;
 }
 
