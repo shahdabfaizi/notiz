@@ -43,6 +43,7 @@ body {
   color: #5a5a5a;
   font-size: 2vh;
   position: relative;
+  padding: 1rem;
 }
 
 .note:hover {

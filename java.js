@@ -100,8 +100,8 @@ function editNote(id) {
   const noteToEdit = saveNotes.find((note) => note.id === id);
 
   if (noteToEdit) {
-    headlineValue = noteToEdit.noteHeadline;
-    noteValue = noteToEdit.note;
+    document.getElementById("headline").value = noteToEdit.noteHeadline;
+    document.getElementById("noteAreaText").value = noteToEdit.note;
     currentNoteId = id;
   }
 }
