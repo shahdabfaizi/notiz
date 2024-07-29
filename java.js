@@ -1,27 +1,27 @@
 let currentNoteId = null;
 
 function addNewNote() {
-  const ueber = document.getElementById("ueberschrift").value;
-  const notiz = document.getElementById("notiz").value;
+  const headline = document.getElementById("headline").value;
+  const note = document.getElementById("noteAreaText").value;
   const lastUpdated = new Date().toISOString();
 
-  if (ueber && notiz) {
+  if (headline && note) {
     if (currentNoteId === null) {
       const id = Math.random();
-      const speichern = {
+      const save = {
         id: id,
-        notizenUeberschrift: ueber,
-        notiz: notiz,
+        noteHeadline: headline,
+        note: note,
         lastUpdated: lastUpdated,
       };
 
-      saveToLocalStorage(speichern);
+      saveToLocalStorage(save);
     } else {
-      updateNoteInLocalStorage(currentNoteId, ueber, notiz, lastUpdated);
+      updateNoteInLocalStorage(currentNoteId, headline, note, lastUpdated);
     }
 
-    document.getElementById("ueberschrift").value = "";
-    document.getElementById("notiz").value = "";
+    document.getElementById("headline").value = "";
+    document.getElementById("noteAreaText").value = "";
     currentNoteId = null;
 
     displayNotes();
@@ -32,30 +32,30 @@ function addNewNote() {
   }
 }
 
-function saveToLocalStorage(speichern) {
-  let gespeicherteNotizen = JSON.parse(localStorage.getItem("notizen")) || [];
-  gespeicherteNotizen.push(speichern);
-  localStorage.setItem("notizen", JSON.stringify(gespeicherteNotizen));
+function saveToLocalStorage(save) {
+  const saveNotes = JSON.parse(localStorage.getItem("notes")) || [];
+  saveNotes.push(save);
+  localStorage.setItem("notes", JSON.stringify(saveNotes));
 }
 
-function updateNoteInLocalStorage(id, ueber, notiz, lastUpdated) {
-  let gespeicherteNotizen = JSON.parse(localStorage.getItem("notizen")) || [];
-  gespeicherteNotizen = gespeicherteNotizen.map((note) => {
+function updateNoteInLocalStorage(id, headline, note, lastUpdated) {
+  const saveNotes = JSON.parse(localStorage.getItem("notes")) || [];
+  saveNotes = saveNotes.map((note) => {
     if (note.id === id) {
-      note.notizenUeberschrift = ueber;
-      note.notiz = notiz;
+      note.noteHeadline = headline;
+      note.note = note;
       note.lastUpdated = lastUpdated;
     }
     return note;
   });
-  localStorage.setItem("notizen", JSON.stringify(gespeicherteNotizen));
+  localStorage.setItem("notes", JSON.stringify(saveNotes));
 }
 
-function loeschen() {
+function deleteButton() {
   if (currentNoteId !== null) {
-    loescheNoteFromLocalStorage(currentNoteId);
-    document.getElementById("ueberschrift").value = "";
-    document.getElementById("notiz").value = "";
+    deleteoteFromLocalStorage(currentNoteId);
+    headlineValue;
+    noteValue;
     currentNoteId = null;
     displayNotes();
   } else {
@@ -63,19 +63,19 @@ function loeschen() {
   }
 }
 
-function loescheNoteFromLocalStorage(id) {
-  let gespeicherteNotizen = JSON.parse(localStorage.getItem("notizen")) || [];
-  gespeicherteNotizen = gespeicherteNotizen.filter((note) => note.id !== id);
-  localStorage.setItem("notizen", JSON.stringify(gespeicherteNotizen));
+function deleteoteFromLocalStorage(id) {
+  const saveNotes = JSON.parse(localStorage.getItem("notes")) || [];
+  saveNotes = saveNotes.filter((note) => note.id !== id);
+  localStorage.setItem("notes", JSON.stringify(saveNotes));
 }
 
 function displayNotes() {
   const notesList = document.getElementById("notesList");
   notesList.innerHTML = "";
 
-  let gespeicherteNotizen = JSON.parse(localStorage.getItem("notizen")) || [];
+  const saveNotes = JSON.parse(localStorage.getItem("notes")) || [];
 
-  gespeicherteNotizen.forEach((note) => {
+  saveNotes.forEach((note) => {
     const noteDiv = document.createElement("div");
     noteDiv.classList.add("note");
     noteDiv.onclick = (event) => {
@@ -84,10 +84,8 @@ function displayNotes() {
     };
 
     noteDiv.innerHTML = `
-            <p class="usbsr">Überschrift: ${escapeHtml(
-              note.notizenUeberschrift
-            )}</p>
-            <p class="usbsr">Notiz: ${escapeHtml(note.notiz)}</p>
+            <p class="usbsr">Überschrift: ${escapeHtml(note.noteHeadline)}</p>
+            <p class="usbsr">Notiz: ${escapeHtml(note.note)}</p>
             <div class="datum">Zuletzt aktualisiert: ${new Date(
               note.lastUpdated
             ).toLocaleString()}</div>
@@ -98,20 +96,19 @@ function displayNotes() {
 }
 
 function editNote(id) {
-  let gespeicherteNotizen = JSON.parse(localStorage.getItem("notizen")) || [];
-  const noteToEdit = gespeicherteNotizen.find((note) => note.id === id);
+  const saveNotes = JSON.parse(localStorage.getItem("notes")) || [];
+  const noteToEdit = saveNotes.find((note) => note.id === id);
 
   if (noteToEdit) {
-    document.getElementById("ueberschrift").value =
-      noteToEdit.notizenUeberschrift;
-    document.getElementById("notiz").value = noteToEdit.notiz;
+    headlineValue = noteToEdit.noteHeadline;
+    noteValue = noteToEdit.note;
     currentNoteId = id;
   }
 }
 
 function createNewNote() {
-  document.getElementById("ueberschrift").value = "";
-  document.getElementById("notiz").value = "";
+  headlineValue;
+  noteValue;
   currentNoteId = null;
 }
 
@@ -126,13 +123,4 @@ function escapeHtml(unsafe) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
-}
-
-function unescapeHtml(safe) {
-  return safe
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#039;/g, "'");
 }

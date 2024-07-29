@@ -7,34 +7,34 @@
     <link rel="stylesheet" href="style.css" />
     <script src="java.js"></script>
   </head>
-  <body style="margin: 0">
+  <body>
     <div class="sidebar">
-      <button onclick="createNewNote()" class="newNotiz">
+      <button onclick="createNewNote()" class="newNotes">
         Neue Notiz erstellen...
       </button>
       <div id="notesList"></div>
     </div>
-    <div class="notizfeld">
+    <div class="noteArea">
       <div id="noteEditor">
         <div class="header">
           <input
             type="text"
-            name="notizenUeberschrift"
-            id="ueberschrift"
+            name="noteHeadline"
+            id="headline"
             placeholder="Überschrift eingeben...."
           />
           <button onclick="addNewNote()" class="saveButton">Speichern</button>
           <button
             id="deleteButton"
             style="background-color: rgb(167, 46, 46)"
-            onclick="loeschen(); event.stopPropagation();"
+            onclick="deleteButton(); event.stopPropagation();"
             class="trash"
           ></button>
         </div>
         <div class="card-body">
           <textarea
-            name="notiz"
-            id="notiz"
+            name="noteAreaText"
+            id="noteAreaText"
             placeholder="Notiz eingeben....."
           ></textarea>
         </div>
